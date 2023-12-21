@@ -14,7 +14,7 @@ import java.util.Scanner;
  */
 public class Methods {
 
-    static void linearSort(ArrayList<String> list) {
+    static void linearSearch(ArrayList<String> list) {
         String w = null;
         while (w == null) { 
             System.out.println(

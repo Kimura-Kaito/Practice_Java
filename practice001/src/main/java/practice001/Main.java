@@ -23,7 +23,7 @@ public class Main {
                 "Please select [Search] or [Sort] to perform.");
             int n = BasicMethod.selectMethod();
             switch (n) {
-                case 1 -> Methods.linearSort(madelist);
+                case 1 -> Methods.linearSearch(madelist);
                 case 2 -> Methods.bubbleSort(madelist);
                 case 3 -> Methods.insertionSort(madelist);
                 case 4 -> Methods.shellSort(madelist);

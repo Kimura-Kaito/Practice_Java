@@ -8,14 +8,14 @@ import java.util.ArrayList;
  */
 public class App {
     public static void main( String[] args ) {
-        System.out.println("Hello user!");
+        System.out.println("こんにちは！");
         System.out.println(
-            "Create a list with 10 elements.");
+            "10個の要素を入力してください。");
         ArrayList<String> madelist = BasicMethods.makeList();
         boolean roop = true;
         while (roop) {
             System.out.println(
-                "Please select [Search] or [Sort] to perform.");
+                "実行する「検索」または「並び替え」を選んでください。");
             int n = BasicMethods.selectMethod();
             switch (n) {
                 case 1 -> Methods.linearSearch(madelist);
@@ -26,6 +26,6 @@ public class App {
                 default -> roop = false;
             }
         }
-        System.out.println("see you again!");
+        System.out.println("さようなら。");
     }
 }

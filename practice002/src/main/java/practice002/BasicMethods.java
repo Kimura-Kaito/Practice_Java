@@ -12,12 +12,11 @@ public class BasicMethods {
             String w = null;
             while (w == null) { 
                 System.out.printf(
-                    "Please enter characters. No.%d : ", i);
+                    "文字を入力してください。%d番目 : ", i);
                 Scanner sc = new Scanner(System.in);
                 try {
                     w = sc.next();
                 } catch (Exception e) {
-                    System.out.println("");
                     w = null;
                 }
             }
@@ -38,6 +37,7 @@ public class BasicMethods {
             System.out.printf("%d. %s\n", i + 1, method.get(i));
         }
         while (n == -1) { 
+            System.out.print("実行番号 : ");
             Scanner sc = new Scanner(System.in);
             try {
                 n = sc.nextInt();
@@ -45,10 +45,26 @@ public class BasicMethods {
                     throw new Exception();
                 }
             } catch (Exception e) {
-                System.out.println("Please enter a valid number.");
+                System.out.println("正しい数字を入力してください。");
                 n = -1;
             }
         }
         return n;
+    }
+
+    static String searchWord() {
+        String w = null;
+        while (w == null) { 
+            System.out.print(
+                "検索する文字を入力してください。 : ");
+            Scanner sc = new Scanner(System.in);
+            try {
+                w = sc.next();
+            } catch (Exception e) {
+                System.out.println("");
+                w = null;
+            }
+        }
+        return w;
     }
 }

@@ -4,8 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * 標準入力に関するメソッド
+ */
 public class BasicMethods {
 
+    /**
+     * 標準入力をArrayList<String>にまとめるメソッド
+     * @return 入力をまとめたリスト
+     */
     static ArrayList<String> makeList() {
         ArrayList<String> list = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
@@ -25,6 +32,10 @@ public class BasicMethods {
         return list;
     }
 
+    /**
+     * 標準入力で実行するメソッドをを選択させるメソッド
+     * @return メソッド番号
+     */
     static int selectMethod() {
         var method = List.of("linear search",
                              "bubble sort",
@@ -52,6 +63,10 @@ public class BasicMethods {
         return n;
     }
 
+    /**
+     * 検索する文字を標準入力から取得するメソッド
+     * @return 検索する文字
+     */
     static String searchWord() {
         String w = null;
         while (w == null) { 

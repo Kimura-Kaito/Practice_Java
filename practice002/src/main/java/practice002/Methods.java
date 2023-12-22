@@ -2,8 +2,15 @@ package practice002;
 
 import java.util.ArrayList;
 
+/**
+ * 検索と並び替えに関するメソッドをまとめたクラス
+ */
 public class Methods {
 
+    /**
+     * 線形探索メソッド
+     * @param original リスト
+     */
     static void linearSearch(ArrayList<String> original) {
         var list = new ArrayList<String>(original);
         String w = BasicMethods.searchWord();
@@ -24,7 +31,10 @@ public class Methods {
             System.out.println("");
         }
         
-
+    /**
+     * バブルソートメソッド
+     * @param original リスト
+     */
     static void bubbleSort(ArrayList<String> original) {
         var list = new ArrayList<String>(original);
         boolean sortFlag = true;
@@ -36,9 +46,8 @@ public class Methods {
                 var front = list.get(i).toCharArray();
                 var back = list.get(i + 1).toCharArray(); 
                 if (front[0] > back[0]) {
-                    String pool = list.get(i);
-                    list.set(i, list.get(i + 1));
-                    list.set(i + 1, pool);
+                    list.add(i, list.get(i + 1));
+                    list.remove(i + 2);
                     sortFlag = true;
                 }
             }
@@ -47,12 +56,21 @@ public class Methods {
        System.out.println("バブルソートが完了しました。");
     }
 
+    /**
+     * 挿入ソートメソッド
+     * @param original リスト
+     */
     static void insertionSort(ArrayList<String> original) {
         ArrayList<String> list = insertionBase(original);
         System.out.printf("結　果 : %s\n", list);
         System.out.println("挿入ソートが完了しました。");
     }
 
+    /**
+     * 挿入ソートのアルゴリズムメソッド
+     * @param original リスト
+     * @return ソートしたリスト
+     */
     static ArrayList<String> insertionBase(ArrayList<String> original) {
         var list = new ArrayList<String>(original);
         for (int i = 1; i < list.size(); i++) {
@@ -61,26 +79,23 @@ public class Methods {
                 var front = list.get(j).toCharArray();
                 var back = list.get(i).toCharArray(); 
                 if (front[0] > back[0]) {;
-                    var poolF = list.get(j);
-                    list.set(j, list.get(i));
-                    for (int k = j + 1; k <= i; k++) {
-                        var poolB = list.get(k);
-                        list.set(k, poolF);
-                        poolF = poolB;
-                    }
-                    break;
+                    list.add(j, list.get(i));
+                    list.remove(i + 1);
                 }
             }
         }
         return list;
     }
 
+    /**
+     * シェルソートメソッド
+     * @param original リスト
+     */
     static void shellSort(ArrayList<String> original) {
         var list = new ArrayList<String>(original);
-        int h = list.size();
+        int h = list.size() / 2;
         System.out.printf("　　元 : %s\n", list);
         while (h > 0) {
-            h /= 2;
             for (int i = 0; i < h; i++) {
                 var poolList = new ArrayList<String>();
                 for (int j = i; j < list.size(); j += h) {
@@ -94,16 +109,26 @@ public class Methods {
                 }
             }
             System.out.printf("h = %2d : %s\n", h, list);
+            h /= 2;
         }
         System.out.println("シェルソートが完了しました。");
     }
 
+    /**
+     * クイックソートメソッド
+     * @param original リスト
+     */
     static void quickSort(ArrayList<String> original) {
         System.out.printf("元データ : %s\n", original);
         quickBase(original);
         System.out.println("クイックソートが完了しました。");
     }
 
+    /**
+     * 分割統治アルゴリズムメソッド
+     * @param original リスト
+     * @return ソートしたリスト
+     */
     static ArrayList<String> quickBase(ArrayList<String> original) {
         var pivot = original.get(0);
         var divideF = new ArrayList<String>();

@@ -1,0 +1,194 @@
+@charset "UTF-8";
+
+/* ==========ファイルアップロードブロック========== */
+
+.file-upload-block {
+
+	/* 余白 */
+	margin: 5px;
+	padding: 20px;
+
+	/* 位置 */
+	display: inline-block;
+}
+
+.file-upload-block div {
+
+	/* 余白 */
+	margin: 5px;
+	padding: 7px;
+
+	/* 形 */
+	border-radius: 10px;
+}
+
+/* ==========ファイル情報ブロック========== */
+
+.file-info-block {
+
+	/* 背景 */
+	background-color: #EEEEEE;
+}
+
+.file-info-block input[type=file] {
+
+	/* 余白 */
+	margin-bottom: 5px;
+}
+
+.file-info-block table {
+
+	/* 余白 */
+	margin-top: 10px;
+}
+
+.file-info-block a {
+
+	/* 文字 */
+	font-weight: bold;
+}
+
+.file-info-block table th {
+
+	/* 形 */
+	width: 30%;
+
+	/* 文字 */
+	font-weight: normal;
+}
+
+.file-info-block table td {
+
+	/* 形 */
+	width: 60%;
+}
+
+.file-info-block input {
+
+	/* 枠線 */
+	border-color: #EEEEEE;
+}
+
+/* ==========アップロードボタンブロック========== */
+
+.upload-button-block {
+
+	/* 背景 */
+	background-color: transparent;
+
+	/* 文字 */
+	text-align: right;
+}
+
+.upload-button {
+
+	/* 余白 */
+	margin-right: 10px;
+}
+
+/* ==========エラーメッセージブロック========== */
+
+.error-msg-block {
+
+	/* 余白 */
+	margin: 0 auto;
+	margin-bottom: 20px;
+	padding: 5px;
+
+	/* 形 */
+	width: 98%;
+	border-radius: 10px;
+
+	/* 背景 */
+	background-color: #ffe6e6;
+
+	/* 枠線 */
+	border: 1px solid #ff8080;
+
+	/* 文字 */
+	font-weight: bold;
+	color: red;
+}
+
+/* ==========プレビュー表========== */
+
+#preview-table thead {
+
+	/* 背景 */
+	background: linear-gradient(#CEF9DC, #B1F9D0);
+}
+
+#preview-table tbody {
+
+	/* 背景 */
+	background-color: white;
+}
+
+#preview-table tbody tr:hover {
+
+	/* 背景 */
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ==========下ボタンブロック========== */
+
+.bottom-button-block {
+
+	/* 余白 */
+	margin: 0px;
+	padding-top: 8px;
+
+	/* 形 */
+	width: 100%;
+	height: 75px;
+
+	/* 位置 */
+	position: fixed;
+	bottom: 0;
+	z-index: 999;
+
+	/* 背景 */
+	background-color: #EEEEEE;
+	box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.5);
+
+	/* 文字 */
+	text-align: center;
+}
+
+.bottom-button-block span {
+
+	/* 余白 */
+	margin: 20px;
+}
+
+.bottom-button-block button {
+
+	/* 形 */
+	border-radius: 10px;
+
+	/* 位置 */
+	vertical-align: top;
+
+	/* 枠線 */
+	border-color: silver;
+	background-color: white;
+
+	/* 文字 */
+	font-size: 20px;
+	font-weight: bold;
+
+	/* カーソル */
+	cursor: pointer;
+}
+
+.bottom-button-block button:hover{
+	
+	/* 背景 */
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+body:has(.bottom-button-block) {
+
+	/* 余白 */
+	margin-bottom: 100px;
+}

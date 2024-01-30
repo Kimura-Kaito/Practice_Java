@@ -1,0 +1,6 @@
+DROP TABLE level;
+CREATE TABLE level(
+id INTEGER PRIMARY KEY,
+allowance INTEGER NOT NULL,
+max INTEGER
+);

@@ -1,0 +1,116 @@
+package com.example.licenseManager.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.example.licenseManager.entity.Employee;
+import com.example.licenseManager.entity.EmployeeLicense;
+import com.example.licenseManager.entity.Level;
+import com.example.licenseManager.entity.License;
+import com.example.licenseManager.repository.EmployeeLicenseRepository;
+import com.example.licenseManager.repository.EmployeeRepository;
+import com.example.licenseManager.repository.LevelRepository;
+import com.example.licenseManager.service.LicenseManagerService;
+import com.example.view.LicenseManagerListExcel;
+
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequiredArgsConstructor
+public class LicenseManagerListControoler {
+	private final LicenseManagerService licenseManagerService;
+
+	private final EmployeeRepository employeeRepository;
+	private final EmployeeLicenseRepository employeeLicenseRepository;
+	private final LevelRepository levelRepository;
+
+	// トップ画面を表示
+	@GetMapping("/top")
+	public String top(Model model) {
+
+		// 全社員リストを取得して保存
+		//List<Employee> allEmployeeList = employeeRepository.findAll();
+		List<Employee> allEmployeeList = employeeRepository.queryAll();
+		//データ０件対応されていないので追加する（20231111funayama）
+		if (allEmployeeList.size() == 0) {
+			//データなしで処理なし
+		} else {
+			model.addAttribute("allEmployeeList", allEmployeeList);
+	
+			// レベル別資格リストを取得して保存
+			List<Level> levelList = levelRepository.queryAll();
+			//データ０件対応されていないので追加する（20231111funayama）
+			if (levelList.size() == 0) {
+				//データなしで処理なし
+			} else {
+				model.addAttribute("levelList", levelList);
+		
+				// 非表示資格リストを取得して保存
+				List<License> hiddenLicenseList = licenseManagerService.getHiddenLicenseList(levelList);
+				model.addAttribute("hiddenLicenseList", hiddenLicenseList);
+		
+				// 全所持資格リストを取得
+				//List<EmployeeLicense> employeeLicenseList = employeeLicenseRepository.findAll();
+				List<EmployeeLicense> employeeLicenseList = employeeLicenseRepository.queryAll();
+		
+				// 資格手当の有無を取得して保存
+				Map<Integer, Boolean> isInvalidLicense = licenseManagerService.isInvalidLicense(employeeLicenseList);
+				model.addAttribute("isInvalidLicense", isInvalidLicense);
+		
+				// 所持上位資格の有無を取得して保存
+				Map<Integer, Boolean> haveHigherLicense = licenseManagerService.haveHigherLicense(employeeLicenseList);
+				model.addAttribute("haveHigherLicense", haveHigherLicense);
+		
+				// 資格手当支給額を取得して保存
+				Map<Integer, Integer> employeeAllowance = licenseManagerService.getEmployeeAllowance(allEmployeeList, levelList,
+						isInvalidLicense, haveHigherLicense);
+				model.addAttribute("employeeAllowance", employeeAllowance);
+		
+				// 資格手当支給額上限
+				model.addAttribute("maxAllowance", 45000);
+			}
+		}
+
+		return "top";
+	}
+
+	// 資格取得管理簿のダウンロード
+	@GetMapping("top/excel")
+	public LicenseManagerListExcel writeExcel(LicenseManagerListExcel excel) {
+
+		// レベル別資格リストを生成して保存
+		List<Level> levelList = levelRepository.queryAll();
+		excel.addStaticAttribute("levelList", levelList);
+
+		// 全社員リストを生成して保存
+		//List<Employee> allEmployeeList = employeeRepository.findAll();
+		List<Employee> allEmployeeList = employeeRepository.queryAll();
+		excel.addStaticAttribute("allEmployeeList", allEmployeeList);
+
+		// 全所持資格リストを取得
+		//List<EmployeeLicense> employeeLicenseList = employeeLicenseRepository.findAll();
+		//202312ソート順を変更
+		List<EmployeeLicense> employeeLicenseList = employeeLicenseRepository.queryAll();
+
+		// 資格手当の有無を取得して保存
+		Map<Integer, Boolean> isInvalidLicense = licenseManagerService.isInvalidLicense(employeeLicenseList);
+		excel.addStaticAttribute("isInvalidLicense", isInvalidLicense);
+
+		// 所持上位資格の有無を取得して保存
+		Map<Integer, Boolean> haveHigherLicense = licenseManagerService.haveHigherLicense(employeeLicenseList);
+		excel.addStaticAttribute("haveHigherLicense", haveHigherLicense);
+		
+		// 資格手当支給額を取得して保存
+		Map<Integer, Integer> employeeAllowance = licenseManagerService.getEmployeeAllowance(allEmployeeList, levelList,
+				isInvalidLicense, haveHigherLicense);
+		excel.addStaticAttribute("employeeAllowance", employeeAllowance);
+		
+		// 資格手当支給額上限
+
+		return excel;
+	}
+}

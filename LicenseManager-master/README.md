@@ -1,0 +1,6 @@
+# LicenseManager
+フォルダ構成はSpringBoot3の教科書に準拠し、javaファイルはsrc/main/java内にそれぞれ対応するパッケージに格納する。
+また、cssファイルやsqlファイルはstaticフォルダに、htmlファイルはtemplateフォルダに格納する。
+
+使用したテスト用Excelファイル
+https://drive.google.com/drive/folders/1OlTbrdQ4fTdhoyZfNu4i2N8McHZ_yWV7

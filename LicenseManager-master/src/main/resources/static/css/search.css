@@ -1,0 +1,97 @@
+@charset "UTF-8";
+
+/* ==========検索ブロック========== */
+
+.search-block {
+
+	/* 余白 */
+	margin: 5px;
+	padding: 20px;
+	padding-bottom: 0px;
+
+	/* 文字 */
+	font-size: 16px;
+}
+
+.search-block input[type="search"] {
+
+	/* 形 */
+	width: 280px;
+
+	/* 枠線 */
+	border-color: silver;
+}
+
+.search-block input[type="search"]::-webkit-search-cancel-button {
+
+	/* 形 */
+	height: 16px;
+	width: 16px;
+	-webkit-appearance: auto;
+}
+
+.search-block label {
+
+	/* 文字 */
+	font-weight: normal;
+}
+
+.search-block .text {
+
+	/* 文字 */
+	font-size: 14px;
+}
+
+#checked-length{
+	
+	/* 位置 */
+	margin-left: 15px;
+}
+
+/* ==========チェックボックスブロック========== */
+
+.checks-block {
+
+	/* 形 */
+	min-width: 330px;
+	width: 500px;
+	min-height: 50px;
+	height: 125px;
+	overflow-y: scroll;
+	resize: both;
+
+	/* 背景 */
+	background-color: #EEEEEE;
+
+	/* 枠線 */
+	border: 2px solid silver;
+
+	/* 文字 */
+	font-size: 14px;
+}
+
+.checks-block label:hover {
+
+	/* 背景 */
+	background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ==========検索表========== */
+
+#search-table thead {
+
+	/* 背景 */
+	background: linear-gradient(#D9E5FF, #BAD3FF);
+}
+
+#search-table tbody {
+
+	/* 背景 */
+	background-color: white;
+}
+
+#search-table tbody tr:hover {
+
+	/* 背景 */
+	background-color: rgba(0, 0, 0, 0.1);
+}

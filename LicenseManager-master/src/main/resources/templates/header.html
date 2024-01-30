@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.css" />
+	<script src="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.js"></script>
+</head>
+
+<body>
+	<div th:fragment="header" class="header">
+		<span class="logo">
+			LicenseManager
+		</span>
+		<span class="links">
+			<a th:href="@{/top}">▶トップ</a>
+			<a th:href="@{/regist}">▶資格登録・一括</a>
+			<a th:href="@{/registForm}">▶資格登録・個人</a>
+			<a th:href="@{/personalSearch}">▶個人資格出力</a>
+			<a th:href="@{/selectedSearch}">▶資格選択出力</a>
+			<a th:href="@{/employeeMaintenance}">▶人事マスタメンテ</a>
+		</span>
+	</div>
+</body>
+
+</html>

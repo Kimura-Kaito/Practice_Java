@@ -1,0 +1,160 @@
+@charset "UTF-8";
+
+/* ==========ヘッダー========== */
+
+.header {
+	
+	/* 形 */
+	width: 100%;
+	height: 75px;
+	
+	/* 位置 */
+	display: flex;
+	align-items: flex-end;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 999;
+	
+	/* 背景 */
+	background-color: white;
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.15);
+}
+
+.logo {
+	
+	/* 余白 */
+	margin-left: 15px;
+	margin-right: 20px;
+	
+	/* 文字 */
+	font-size: 50px;
+	font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+	font-style: italic;
+	color: #5D99FF;
+	
+	/* カーソル */
+	cursor: default;
+}
+
+.links {
+	
+	/* 余白 */
+	margin: 10px;
+	
+	/* 文字 */
+	font-size: 16px;
+}
+
+.links a {
+	
+	/* 余白 */
+	margin: 5px;
+}
+
+body {
+	
+	/* 余白 */
+	margin-top: 75px;
+	margin-bottom: 25px;
+	
+	/* 背景 */
+	background-color: #EEFFFF;
+}
+
+/* ==========列========== */
+
+table .id {
+	/* 文字 */
+	text-align: center;
+}
+
+table .date {
+
+	/* 文字 */
+	text-align: center;
+}
+
+table .allowance {
+
+	/* 文字 */
+	text-align: right;
+}
+
+/* ==========ボタン========== */
+
+.excel-button:hover {
+
+	/* 背景 */
+	background-color: #AEFFBD;
+}
+
+.pdf-button:hover {
+
+	/* 背景 */
+	background-color: #FFABCE;
+}
+
+.hidden-button:hover {
+
+	/* 背景 */
+	background-color: #A7F1FF;
+}
+
+/* ==========ボタンブロック========== */
+
+.button-block {
+
+	/* 余白 */
+	margin: 5px;
+	padding: 20px;
+
+	/* 位置 */
+	display: inline-block;
+
+	/* 文字 */
+	font-size: 16px;
+}
+
+.button-block button {
+
+	/* 形 */
+	border-radius: 10px;
+
+	/* 枠線 */
+	border-color: silver;
+	background-color: white;
+
+	/* カーソル */
+	cursor: pointer;
+}
+
+.button-block span {
+
+	/* 余白 */
+	margin: 10px;
+}
+
+.button-block label:hover{
+	
+	/* 背景 */
+	background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ==========表ブロック========== */
+
+.table-block {
+
+	/* 余白 */
+	margin: 0 auto;
+	padding: 7px;
+
+	/* 形 */
+	width: 98%;
+	border-radius: 10px;
+
+	/* 背景 */
+	background-color: #EEEEEE;
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.15);
+}

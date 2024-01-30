@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" href="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.css"/> 
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/css/upload.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<!-- ヘッダー -->
+	<div th:replace="~{header :: header}"></div>
+	<form th:action="@{/registForm}" method="post" th:object="${employeeLicenseData}">		
+		<table id="registForm" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>社員番号</th>
+					<th id = "showName" style="display: none">氏名</th>
+					<th>試験名</th>
+					<th>取得日</th>
+					<th>届出日</th>
+					<th>給与開始日</th>
+					<th>備考</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<!-- 社員番号 -->
+					<td>
+						<input type="number" name="employee" id ="id" placeholder="000" autocomplete="on" list="list" required>
+						<!-- 入力候補データリスト -->
+						<datalist id="list">
+							<th:block th:each="employee:${allEmployeeList}">
+								<option th:value="${employee.id}" th:label="${employee.name}"></option>
+							</th:block>
+						</datalist>
+					</td>
+					
+					<!-- 氏名(社員番号入力時に出力) -->
+					<td id = "showName2" style="display:none">
+						<!-- <output name="id"></output> -->
+						<output name="employee"></output>
+					</td>
+					
+					<!-- 試験名 -->
+					<td>
+						<!-- <select name="exam"> -->
+						<select name="license">
+    						<option th:each="license : ${licenseList}"
+            					th:value="${license.id}"
+            					th:text="${license.name}"></option>
+						</select>
+					</td>
+					
+					<!-- 取得日 -->
+					<td>
+						<!-- <input type="date" name="get_date"> -->
+						<input type="date" name="getDate" required >
+					</td>
+					
+					<!-- 届出日 -->
+					<td>
+						<!-- <input type="date" name="notification_date"> -->
+						<input type="date" name="notificationDate" required>
+					</td>
+					
+					<!-- 給与開始日 -->
+					<td>
+						<!-- <input type="date" name="salary_start_date"> -->
+						<input type="date" name="startDate" th:field="*{startDate}" required>
+					</td>
+					
+					<!-- 備考 -->
+					<td>
+						<input type="text" name="remarks">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!--エラーメッセージ(20231128追加) -->
+		<div th:if="${errorMsgList2} != null" class="error-msg-block">
+			<div th:each="errorMsg:${errorMsgList2}" th:text="${errorMsg}"></div>
+		</div>
+	
+		<button type="submit" th:formaction="@{/registForm/create}" th:text="登録"></button>
+		
+		<button type="submit" th:formaction="@{/registForm/cancel}" th:text="キャンセル"></button>
+	</form>
+	<script src="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.js"></script>
+	<script>
+		jQuery(function($){
+			$("#registForm").DataTable({
+				"language": {
+					"url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+				},
+				columnDefs: [
+					{targets: 0, width: "70px"},
+					{targets: 1, width: "10px", ordering: false}
+				],
+				
+				/*
+				//列幅自動調節
+				"columns":[
+				null
+				],
+				*/
+				
+					
+				//検索機能無効化
+				searching: false,
+				//ページング機能無効化
+				paging: false
+			});
+		});
+	</script>
+	
+	<script>
+		//社員番号入力時に氏名出力
+		document.addEventListener('input', (event)=>{
+			let
+			e = event.target,
+			list = e.list;
+			row = document.getElementById("showName");
+			row2 = document.getElementById("showName2");
+			
+			if(list){
+				let
+				option = list.querySelector(`option[value="${e.value}"]`),
+				output = document.querySelector(`output[name="${e.name}"]`);
+				
+				if(option && output){
+					row.style.display= "block";
+					row2.style.display="block";
+					output.value = option.label;
+				}
+			}
+		}, false);
+	</script>
+
+</body>
+</html>

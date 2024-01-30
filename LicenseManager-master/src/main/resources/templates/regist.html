@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.css" />
+	<script src="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.js"></script>
+	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+	<link th:href="@{/css/upload.css}" rel="stylesheet" type="text/css">
+	<script>
+		$(function ($) {
+			$("#preview-table").DataTable({
+				"language": {
+					"url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+				},
+				autowidth: false,
+				lengthMenu: [10, 50, 100, 200, 500],
+				displayLength: 50
+			});
+		});
+	</script>
+	<title>LicenseManager</title>
+</head>
+
+<body>
+	<!-- ヘッダー -->
+	<div th:replace="~{header :: header}"></div>
+
+	<!-- ファイルアップロードブロック -->
+	<div>
+		<div class="file-upload-block">
+			<!-- フォーム（Excelファイル） -->
+			<form th:action="@{/regist}" enctype="multipart/form-data" method="post">
+
+				<!-- ファイル情報ブロック -->
+				<div class="file-info-block">
+					<input type="file" name="file_contents" required>
+					<span class="template-link">
+						登録テンプレート：
+						<a th:href="@{/regist/template}">取得資格リスト.xlsx</a>
+					</span>
+					<table>
+						<!-- シート番号 -->
+						<tr>
+							<th>シート番号 </th>
+							<td>
+								<input type="number" name="sheetNum" value="1" min="1" required>
+							</td>
+						</tr>
+						<!-- ヘッダー行 -->
+						<tr>
+							<th>ヘッダー行</th>
+							<td>
+								<input type="number" name="firstRowNum" value="2" min="1" required>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<!-- アップロードボタンブロック -->
+				<div class="upload-button-block">
+					<button class="upload-button" type="submit">アップロード</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- フォーム（所持資格情報） -->
+	<form th:action="@{/regist/add}" method="post" th:object="${employeeLicenseDataListParam}">
+
+		<!-- エラーメッセージ -->
+		<div th:if="${errorMsgList} != null" class="error-msg-block">
+			<div th:each="errorMsg:${errorMsgList}" th:text="${errorMsg}"></div>
+		</div>
+
+		<!-- 表ブロック -->
+		<div class="table-block" th:if="${employeeLicenseDataListParam != null}">
+			<!-- プレビュー表 -->
+			<table id="preview-table" class="table table-bordered" style="width: 100%;"
+				th:if="${employeeLicenseDataListParam != null}">
+				<!-- ヘッダー -->
+				<thead>
+					<tr>
+						<th>社員番号</th>
+						<th>氏名</th>
+						<th>試験名</th>
+						<th>取得日</th>
+						<th>届出日</th>
+						<th>付与開始月</th>
+						<th>備考</th>
+					</tr>
+				</thead>
+				<!-- 表示データ -->
+				<tbody>
+					<tr th:each="employeeLicenseData,st:*{employeeLicenseDataList}">
+						<!-- 社員番号 -->
+						<td th:text="${employeeLicenseData.employee.id}" class="id"></td>
+						<!-- 氏名 -->
+						<td th:text="${employeeLicenseData.employee.name}"></td>
+						<!-- 試験名（取得資格） -->
+						<td th:text="${employeeLicenseData.license.name}"></td>
+						<!-- 取得日 -->
+						<td th:text="${employeeLicenseData.getDate}" class="date"></td>
+						<!-- 届出日 -->
+						<td th:text="${employeeLicenseData.notificationDate}" class="date"></td>
+						<!-- 付与開始月 -->
+						<td th:text="${employeeLicenseData.startDate}" class="date"></td>
+						<!-- 備考 -->
+						<td th:text="${employeeLicenseData.remarks}"></td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- フォームデータ -->
+			<div th:if="${employeeLicenseDataListParam != null}">
+				<div th:each="employeeLicenseData,st:*{employeeLicenseDataList}">
+					<input type="hidden" th:field="*{employeeLicenseDataList[__${st.index}__].employee.id}">
+					<input type="hidden" th:field="*{employeeLicenseDataList[__${st.index}__].license.id}">
+					<input type="hidden" th:field="*{employeeLicenseDataList[__${st.index}__].getDate}">
+					<input type="hidden" th:field="*{employeeLicenseDataList[__${st.index}__].notificationDate}">
+					<input type="hidden" th:field="*{employeeLicenseDataList[__${st.index}__].startDate}">
+					<input type="hidden" th:field="*{employeeLicenseDataList[__${st.index}__].remarks}">
+				</div>
+			</div>
+		</div>
+
+		<!-- 下ボタンブロック -->
+		<div class="bottom-button-block" th:if="${employeeLicenseDataListParam != null}">
+			<!-- 追加ボタン -->
+			<span>
+				<button type="submit">追加</button>
+			</span>
+			<!-- 更新ボタン(必要なし)
+			<span>
+				<button type="submit" th:formaction="@{/regist/update}">更新</button>
+			</span>
+			-->
+			<!-- キャンセルボタン -->
+			<span>
+				<button type="submit" th:formaction="@{/regist/cancel}">キャンセル</button>
+			</span>
+			<!-- フォームデータ -->
+			<input type="hidden" th:field="${employeeLicenseDataListParam}">
+		</div>
+	</form>
+</body>
+
+</html>

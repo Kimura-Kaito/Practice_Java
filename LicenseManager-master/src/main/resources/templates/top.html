@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.css" />
+	<script src="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.9.9/xlsx.core.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.3.9/js/tableexport.min.js"></script>
+	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+	<link th:href="@{/css/top.css}" rel="stylesheet" type="text/css">
+	<script>
+		/*
+		$(function ($) {
+			$("#summary-table").DataTable({
+				"language": {
+					"url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+				},
+				autowidth: false,
+				scrollX: true,
+				scrollY: 400,
+				lengthMenu: [10, 50, 100, 200, 500],
+				displayLength: 500,
+				columnDefs: [
+					{targets: "license-header", orderable: false},
+					{targets: "hidden-license", visible: value},
+				],
+				//支給額が高い順にソート(20231201追加)
+				order: [2, 'desc']
+			});
+		});
+		*/
+		$(document).ready(function(){
+			$("#summary-table").DataTable({
+				"language": {
+					"url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+				},
+				autowidth: false,
+				scrollX: true,
+				scrollY: 400,
+				lengthMenu: [10, 50, 100, 200, 500],
+				displayLength: 500,
+				columnDefs: [
+					{targets: "license-header", orderable: false},
+					{targets: "hidden-license", visible: value},
+				],
+				//支給額が高い順にソート(20231201追加)
+				order: [2, 'desc']
+			});
+			
+			//Excel出力処理(20231201追加)
+			$("#summary-table").tableExport({
+				formats:["xlsx"],
+				fileName: "資格取得管理簿",
+				bootstrap: false
+			});
+			
+			$("#summary-table caption").hide();
+			
+			$("#excel-button").on('click', function(){
+				$('.table caption button').trigger('click');
+			});
+		})
+
+		// valueを取得（nullならtrue）
+		let value = JSON.parse(sessionStorage.getItem("value")) ?? true;
+
+		$(document).ready(function () {
+			// チェックボックスを選択or選択解除
+			$('.hidden-check').prop("checked", !value);
+
+			// チェックボックスが選択された時
+			$('.hidden-check').change(function () {
+
+				// valueを反転して保存
+				sessionStorage.setItem("value", JSON.stringify(!value));
+
+				// 画面を更新
+				window.location.reload();
+			});
+		});
+	</script>
+	<title>LicenseManager</title>
+</head>
+
+<body>
+	<!-- ヘッダー -->
+	<div th:replace="~{header :: header}"></div>
+
+	<!-- ボタンブロック -->
+	<div>
+		<div class="button-block" th:if="${employeeLicenseDataListParam == null}">
+			<!-- Excelボタン -->
+			<span>
+				<button th:onclick="|location.href='@{/top/excel}'|" class="excel-button">Excel出力</button>
+				<!--<button type = "button", id = "excel-button">Excel出力</button> -->
+			</span>
+			<!-- 非表示ボタン -->
+			<span>
+				<label>
+					<input type="checkbox" class="hidden-check">取得者のいない資格を非表示
+				</label>
+			</span>
+		</div>
+	</div>
+
+	<!-- 表ブロック -->
+	<div class="table-block" th:if="${employeeLicenseDataListParam == null}">
+		<!-- 一覧表 -->
+		<table id="summary-table" class="table table-bordered summary-table">
+			<!-- ヘッダー -->
+			<thead>
+				<tr>
+					<!-- 社員番号 -->
+					<th rowspan="2" class="employee-header">
+						社員番号
+					</th>
+					<!-- 氏名 -->
+					<th rowspan="2" class="employee-header">
+						氏名
+					</th>
+					<!-- 手当支給額 -->
+					<th rowspan="2" class="employee-header">
+						手当支給額
+					</th>
+					<!-- レベル -->
+					<th th:each="level:${levelList}" th:colspan="${#lists.size(level.licenseList)}"
+						class="level-header">
+						<span>
+							レベル
+							<span th:text="${level.id}"></span>
+							（各
+							<span th:text="${#numbers.formatInteger(level.allowance,3,'COMMA')}"></span>
+							円／上限
+							<span th:text="${#numbers.formatInteger(level.max,3,'COMMA')}"></span>
+							円）
+						</span>
+					</th>
+				</tr>
+				<tr>
+					<!-- 資格名 -->
+					<th:block th:each="level:${levelList}">
+						<th th:each="license:${level.licenseList}" class="license-header"
+							th:classappend="${#lists.contains(hiddenLicenseList,license)} ? 'hidden-license'">
+							<span th:text="${license.name}"></span>
+						</th>
+					</th:block>
+				</tr>
+			</thead>
+			<!-- データ -->
+			<tbody>
+				<tr th:each="employee:${allEmployeeList}">
+					<!-- 社員番号 -->
+					<th th:text="${employee.id}" class="employee-header id"></th>
+					<!-- 氏名 -->
+					<th th:text="${employee.name}" class="employee-header"></th>
+					<!-- 手当支給額 -->
+					<th class="employee-header allowance">
+						<span th:if="${employeeAllowance[employee.id] < 1000}"
+							th:text="${employeeAllowance[employee.id]}"></span>
+						<span th:unless="${employeeAllowance[employee.id] < 1000}"
+							th:text="${#numbers.formatInteger(employeeAllowance[employee.id],3,'COMMA')}"></span>
+					</th>
+					<!-- 所持資格 -->
+					<th:block th:each="level:${levelList}">
+						<td th:each="license:${level.licenseList}"
+							th:classappend="${#lists.contains(hiddenLicenseList,license)} ? 'hidden-license'">
+							<div th:each="employeeLicense:${employee.employeeLicenseList}"
+								th:if="${employeeLicense.license == license}"
+								th:classappend="${haveHigherLicense[employeeLicense.id]} ? 'have-higher-license'">
+								<span th:if="${isInvalidLicense[employeeLicense.id]}">▲</span>
+								<span th:unless="${isInvalidLicense[employeeLicense.id]}">〇</span>
+							</div>
+						</td>
+					</th:block>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</body>
+
+</html>

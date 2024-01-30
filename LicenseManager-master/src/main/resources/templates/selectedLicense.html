@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.css" />
+	<script src="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.js"></script>
+	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+	<link th:href="@{/css/search.css}" rel="stylesheet" type="text/css">
+	<script>
+		$(function ($) {
+			$("#search-table").DataTable({
+				"language": {
+					"url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+				},
+				searching: false,
+				autowidth: false,
+				lengthMenu: [5, 10, 20, 50, 100],
+				displayLength: 20
+			});
+		});
+
+		$(document).ready(function () {
+
+			// 全チェックボックスを選択
+			if ($('.normal-check').length == $('.normal-check:checked').length) {
+				$('.all-check').prop("checked", true);
+			}
+			
+			// 選択項目数を表示
+			if ($('.normal-check:checked').length != 0) {
+				$('#checked-length').text($('.normal-check:checked').length + "項目 選択中");
+			}
+
+			// 全選択チェックボックスを選択j時、全チェックボックスを選択or選択解除
+			$('.all-check').change(function () {
+				if ($('.all-check').prop("checked")) {
+					$('.normal-check').prop("checked", true);
+				} else {
+					$('.normal-check').prop("checked", false);
+				}
+			});
+
+			// 選択肢チェックボックスを選択時、全選択チェックボックスを選択or選択解除
+			$('.normal-check').change(function () {
+				if ($('.normal-check').length == $('.normal-check:checked').length) {
+					$('.all-check').prop("checked", true);
+				} else {
+					$('.all-check').prop("checked", false);
+				}
+			});
+
+			// 選択肢候補ブロックのチェックボックスを選択時、選択項目数を表示
+			$('.checks-block input').change(function () {
+				if ($('.normal-check:checked').length == 0) {
+					$('#checked-length').text("");
+				} else {
+					$('#checked-length').text($('.normal-check:checked').length + "項目 選択中");
+				}
+			});
+		});
+	</script>
+	<title>LicenseManager</title>
+</head>
+
+<body>
+	<!-- ヘッダー -->
+	<div th:replace="~{header :: header}"></div>
+
+	<!-- 検索ブロック -->
+	<div class="search-block">
+		<!-- フォーム（資格名） -->
+		<form th:action="@{/selectedSearch}" method="post" onsubmit="return false;">
+
+			<!-- 検索ボックスブロック -->
+			<div class="search-box-block">
+				<table>
+					<tr>
+						<td>
+							<!-- 検索ボックス -->
+							<span>
+								<input type="search" id="search-box" size="30" autocomplete="on" list="list"
+									placeholder="資格名を入力" style="border-color: silver;">
+								<!-- 入力候補データリスト -->
+								<datalist id="list">
+									<option value="Java"></option>
+									<option value="LPIC"></option>
+									<option value="情報処理技術者試験"></option>
+								</datalist>
+							</span>
+						</td>
+						<td>
+							<!-- 検索ボタン -->
+							<span>
+								<button type="button" onclick="submit();">検索</button>
+							</span>
+						</td>
+						<td>
+							<!-- 選択数表示 -->
+							<span id="checked-length" class="text"></span>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<!-- チェックボックスブロック -->
+			<div class="checks-block">
+
+				<!-- 全選択チェックボックスブロック -->
+				<div class="all-check-block">
+					<!-- 全選択チェックボックス -->
+					<label>
+						<input type="checkbox" class="all-check">全選択
+					</label>
+				</div>
+
+				<!-- 選択肢チェックボックスブロック -->
+				<div th:each="license:${allLicenseList}" th:id="${license.name}" class="normal-check-block">
+					<!-- 選択肢チェックボックス -->
+					<label>
+						<input type="checkbox" class="normal-check" name="q" th:value="${license.name}"
+							th:text="${license.name}" th:checked="${q != null && #lists.contains(q,license.name)}">
+					</label>
+				</div>
+
+				<!-- 未選択用 -->
+				<input type="hidden" name="q" value="">
+			</div>
+
+			<script th:src="@{/js/inputChange.js}" type="text/javascript" charset="utf-8"></script>
+		</form>
+	</div>
+
+	<!-- ボタンブロック -->
+	<div>
+		<div class="button-block" th:if="${employeeLicenseList != null}">
+			<!-- Excelボタン -->
+			<span>
+				<button th:onclick="|location.href='@{/selectedSearch/excel}'|" class="excel-button">Excel出力</button>
+			</span>
+			<!-- PDFボタン -->
+			<span>
+				<button th:onclick="|location.href='@{/selectedSearch/pdf}'|" class="pdf-button">PDF出力</button>
+			</span>
+		</div>
+	</div>
+
+	<!-- 表ブロック -->
+	<div class="table-block" th:if="${employeeLicenseList != null}">
+		<table id="search-table" class="table table-bordered" style="width: 100%;">
+			<thead>
+				<tr>
+					<th>試験名</th>
+					<th>社員番号</th>
+					<th>氏名</th>
+					<th>取得日</th>
+					<th>届出日</th>
+					<!--必要なし <th>手当金額</th>-->
+					<th>付与開始月</th>
+					<th>備考</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="employeeLicense:${employeeLicenseList}" th:object="${employeeLicense}">
+					<!-- 試験名（取得資格） -->
+					<td th:text="*{license.name}"></td>
+					<!-- 社員番号 -->
+					<td th:text="*{employee.id}" class="id"></td>
+					<!-- 氏名 -->
+					<td th:text="*{employee.name}"></td>
+					<!-- 取得日 -->
+					<td th:text="*{#temporals.format(getDate, 'yyyy/MM/dd')}" class="date"></td>
+					<!-- 届出日 -->
+					<td th:text="*{#temporals.format(notificationDate, 'yyyy/MM/dd')}" class="date"></td>
+					<!-- 手当金額(必要なし)
+					<td th:text="*{#numbers.formatInteger(license.level.allowance,3,'COMMA')}" class="allowance"></td>
+					-->
+					<!-- 付与開始日 -->
+					<td th:text="*{startDate}" class="date"></td>
+					<!-- 備考 -->
+					<td th:text="*{remarks}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+</body>
+
+</html>

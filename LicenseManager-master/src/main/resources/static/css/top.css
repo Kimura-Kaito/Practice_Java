@@ -1,0 +1,93 @@
+@charset "UTF-8";
+
+/* ==========一覧表========== */
+
+.summary-table thead th {
+
+	/* 背景 */
+	background: linear-gradient(#829ebc, #225588);
+
+	/* 文字 */
+	color: white;
+}
+
+.summary-table tbody th {
+
+	/* 背景 */
+	background-color: #CCCCCC;
+
+	/* 文字 */
+	font-weight: normal;
+}
+
+.summary-table tbody td {
+
+	/* 背景 */
+	background-color: #c0c0c0;
+
+	/* 文字 */
+	text-align: center;
+}
+
+.summary-table tbody tr:hover {
+
+	/* 背景 */
+	opacity: 0.7;
+}
+
+.summary-table tr .employee-header:nth-child(1) {
+
+	/* 形 */
+	min-width: 100px;
+	box-sizing: border-box;
+
+	/* 位置 */
+	position: sticky;
+	left: 0px;
+	z-index: 100;
+}
+
+.summary-table tr .employee-header:nth-child(2) {
+
+	/* 形 */
+	min-width: 120px;
+	box-sizing: border-box;
+
+	/* 位置 */
+	position: sticky;
+	left: 100px;
+	z-index: 100;
+}
+
+.summary-table tr .employee-header:nth-child(3) {
+
+	/* 形 */
+	min-width: 120px;
+	box-sizing: border-box;
+
+	/* 位置 */
+	position: sticky;
+	left: 220px;
+	z-index: 100;
+}
+
+.summary-table .level-header>span {
+
+	/* 位置 */
+	position: sticky;
+	left: 348px;
+	z-index: 50;
+}
+
+.summary-table .license-header {
+
+	/* 形 */
+	min-width: 120px;
+	box-sizing: border-box;
+}
+
+.summary-table .have-higher-license {
+
+	/* 背景 */
+	background: repeating-linear-gradient(-60deg, transparent, transparent 10px, #555 10px, #555 15px);
+}

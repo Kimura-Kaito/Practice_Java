@@ -43,11 +43,11 @@ public class TodoService {
         // 期限が過去の日付ならエラー
         String deadline = todoData.getDeadline();
         if (!deadline.equals("")) {
-            LocalDate tody = LocalDate.now();
+            LocalDate today = LocalDate.now();
             LocalDate deadlineDate = null;
             try {
                 deadlineDate = LocalDate.parse(deadline);
-                if (deadlineDate.isBefore(tody)) {
+                if (deadlineDate.isBefore(today)) {
                     FieldError fieldError = new FieldError(
                             result.getObjectName(),
                             "deadline",

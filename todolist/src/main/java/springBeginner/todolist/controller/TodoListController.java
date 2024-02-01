@@ -6,7 +6,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,12 +48,18 @@ public class TodoListController {
     // ToDo一覧表示
     @GetMapping("/todo")
     public ModelAndView showTodoList(ModelAndView mv,
+                                     @PageableDefault(page = 0, size = 5, sort = "id") // 11章で追加
                                      Pageable pageable) { // 11章で追加
         // 一覧を検索して表示する
         mv.setViewName("todoList");
-        List<Todo> todoList = todoRepository.findAll();
-        mv.addObject("todoList", todoList);
+//        List<Todo> todoList = todoRepository.findAll();
+        Page<Todo> todoPage = todoRepository.findAll(pageable); // 11章で追加
+        mv.addObject("todoPage", todoPage);
+//        mv.addObject("todoList", todoList);
+        mv.addObject("todoList", todoPage.getContent());
         mv.addObject("todoQuery", new TodoQuery()); // ※Todolist4で追加
+        session.setAttribute("todoQuery", new TodoQuery());
+
         return mv;
     }
 
@@ -137,13 +145,32 @@ public class TodoListController {
         return "redirect:/todo";
     }
 
+    @GetMapping("/todo/query")
+    public ModelAndView queryTodo(@PageableDefault(page = 0, size = 5) Pageable pageable,
+                                  ModelAndView mv) {
+        mv.setViewName("todoList");
+
+        // sessionに保存されている条件で検索
+        TodoQuery todoQuery = (TodoQuery) session.getAttribute("todoQuery");
+        Page<Todo> todoPage = todoDaoImpl.findByCriteria(todoQuery, pageable);
+
+        mv.addObject("todoQuery", todoQuery);
+        mv.addObject("todoPage", todoPage);
+        mv.addObject("todoList", todoPage.getContent());
+
+        return mv;
+    }
+
     // フォームに入力された条件でtodoを検索(todolist4で追加,todolist5で変更)
     @PostMapping("/todo/query")
     public ModelAndView queryTodo(@ModelAttribute TodoQuery todoQuery,
-                                  BindingResult result, ModelAndView mv) {
+                                  BindingResult result,
+                                  @PageableDefault(page = 0, size = 5) Pageable pageable, // 11.3で追加
+                                  ModelAndView mv) {
         mv.setViewName("todoList");
 
-        List<Todo> todoList = null;
+//        List<Todo> todoList = null;
+        Page<Todo> todoPage = null; // 11.3で追加
         if (todoService.isValid(todoQuery, result)) {
             // エラーがなければ検索
 //            todoList = todoService.doQuery(todoQuery);
@@ -152,12 +179,22 @@ public class TodoListController {
 //            todoList = todoDaoImpl.findByJPQL(todoQuery);
 
             // Criteriaによる検索
-            todoList = todoDaoImpl.findByCriteria(todoQuery);
+//            todoList = todoDaoImpl.findByCriteria(todoQuery);
+            todoPage = todoDaoImpl.findByCriteria(todoQuery, pageable); // 11.3で追加
 
+            // 入力された検索条件をsessionに保存
+            session.setAttribute("todoQuery", todoQuery);
+
+            mv.addObject("todoPage", todoPage);
+            mv.addObject("todoList", todoPage.getContent());
+        } else {
+            // エラーがあった場合の検索　11.3で追加
+            mv.addObject("todoPage", null);
+            mv.addObject("todoList", null);
         }
 
 //        mv.addObject("todoQuery", todoQuery);
-        mv.addObject("todoList", todoList);
+//        mv.addObject("todoList", todoList);
         return mv;
     }
 }

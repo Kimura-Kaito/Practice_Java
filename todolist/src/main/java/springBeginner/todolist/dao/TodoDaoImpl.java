@@ -2,11 +2,15 @@ package springBeginner.todolist.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import springBeginner.todolist.common.Utils;
 import springBeginner.todolist.entity.Todo;
 import springBeginner.todolist.entity.Todo_;
@@ -79,7 +83,8 @@ public class TodoDaoImpl implements TodoDao {
 
     // Criteria APIによる検索
     @Override
-    public List<Todo> findByCriteria(TodoQuery todoQuery) {
+//    public List<Todo> findByCriteria(TodoQuery todoQuery) {
+    public Page<Todo> findByCriteria(TodoQuery todoQuery, Pageable pageable) {// 11.3で追加
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Todo> query = builder.createQuery(Todo.class);
         Root<Todo> root = query.from(Todo.class);
@@ -143,9 +148,19 @@ public class TodoDaoImpl implements TodoDao {
         query = query
                 .select(root).where(predArray).orderBy(builder.asc(root.get(Todo_.id)));
 
-        // 検索
-        List<Todo> list = entityManager.createQuery(query).getResultList();
+        //クエリ生成
+        TypedQuery<Todo> typedQuery = entityManager.createQuery(query);
+        //該当レコード数取得
+        int totalRows = typedQuery.getResultList().size();
+        //先頭レコードの位置設定
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        //1ページ当たりの件数
+        typedQuery.setMaxResults(pageable.getPageSize());
 
-        return list;
+        Page<Todo> page = new PageImpl<Todo>(typedQuery.getResultList(), pageable, totalRows);
+        return page;
+//        // 検索
+//        List<Todo> list = entityManager.createQuery(query).getResultList();
+//        return list;
     }
 }
